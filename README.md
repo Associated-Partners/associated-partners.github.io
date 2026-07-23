@@ -57,12 +57,15 @@ Preserve existing **MX / mail TXT** records during the website cutover. Live mai
 
 ## Validation
 
-Pull requests and pushes to `main` run:
+See **[TESTS.md](TESTS.md)** for the full checklist.
 
-- HTML validation (`html-validate`)
-- Broken-link check (`lychee`)
+```bash
+./scripts/verify-local.sh
+./scripts/verify-live.sh
+./scripts/verify-live.sh --require-https   # after custom TLS cert is ready
+```
 
-Manually verify these widths before merge:
+Manually verify these widths before calling the site finished:
 
 `320`, `375`, `768`, `1024`, `1440`, `1920`
 
