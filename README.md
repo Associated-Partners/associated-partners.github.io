@@ -67,3 +67,39 @@ Manually verify these widths before merge:
 ## License
 
 Site code is MIT. Spectral design inspiration remains attributed to HTML5 UP.
+
+## Custom domain (deferred)
+
+`CNAME.example` contains `assocpartners.com`. Keep it as `.example` until the GitHub Pages preview is verified.
+
+When ready for DNS cutover:
+
+```bash
+mv CNAME.example CNAME
+git add CNAME
+git commit -m "Enable assocpartners.com custom domain"
+git push
+```
+
+Then update DNS apex/`www` records for GitHub Pages **without removing Google Workspace MX records**.
+
+## GitHub accounts
+
+Both accounts can edit this repository:
+
+- `jholomorphic` — organization admin
+- `invasivejet` — repository admin collaborator
+
+Switch with:
+
+```bash
+gh auth switch --user jholomorphic
+# or
+gh auth switch --user invasivejet
+```
+
+To push GitHub Actions workflow files, the active account needs the `workflow` OAuth scope:
+
+```bash
+gh auth refresh -h github.com -s workflow
+```
