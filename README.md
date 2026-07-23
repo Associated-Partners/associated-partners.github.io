@@ -39,19 +39,21 @@ Single-page layout:
 
 ### Domain cutover checklist
 
-Do **not** change DNS until the GitHub Pages preview looks correct.
+See **[DNS.md](DNS.md)** for the exact GoDaddy record changes.
 
-1. Build and test locally
-2. Push to GitHub
-3. Enable GitHub Pages (`main` / `/`)
-4. Test `https://associated-partners.github.io`
-5. Confirm custom domain in Pages settings (`assocpartners.com`)
-6. Update DNS apex + `www` records for GitHub Pages
-7. Wait for DNS verification
-8. Enable HTTPS
-9. Verify `assocpartners.com` and `www.assocpartners.com`
+Preview first: https://associated-partners.github.io/
 
-Preserve Google Workspace **MX records** when editing DNS. Website and email use different DNS record types and can coexist.
+1. [x] Build and push website
+2. [x] Enable GitHub Pages (`main` / `/`)
+3. [x] Test `https://associated-partners.github.io`
+4. [x] Set custom domain `assocpartners.com` (CNAME + Pages settings)
+5. [ ] Update GoDaddy apex A records → GitHub Pages IPs
+6. [ ] Update GoDaddy `www` CNAME → `associated-partners.github.io`
+7. [ ] Wait for GitHub DNS verification
+8. [ ] Enforce HTTPS
+9. [ ] Verify `https://assocpartners.com` and `https://www.assocpartners.com`
+
+Preserve existing **MX / mail TXT** records during the website cutover. Live mail is currently Microsoft 365 / Outlook, not Google Workspace — details in `DNS.md` and `ARCHITECTURE.md`.
 
 ## Validation
 
@@ -68,20 +70,9 @@ Manually verify these widths before merge:
 
 Site code is MIT. Spectral design inspiration remains attributed to HTML5 UP.
 
-## Custom domain (deferred)
+## Architecture
 
-`CNAME.example` contains `assocpartners.com`. Keep it as `.example` until the GitHub Pages preview is verified.
-
-When ready for DNS cutover:
-
-```bash
-mv CNAME.example CNAME
-git add CNAME
-git commit -m "Enable assocpartners.com custom domain"
-git push
-```
-
-Then update DNS apex/`www` records for GitHub Pages **without removing Google Workspace MX records**.
+See **[ARCHITECTURE.md](ARCHITECTURE.md)** for the three-layer model (website / email / private assistant).
 
 ## GitHub accounts
 
