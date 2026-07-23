@@ -4,4 +4,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
-assoc-partners.code-workspace
+
+# Separate private repo checked out beside the website for local multi-root work.
+# Remote: https://github.com/Associated-Partners/operations-assistant
+operations-assistant/

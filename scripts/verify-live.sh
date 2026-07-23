@@ -81,7 +81,8 @@ else
 fi
 
 for asset in assets/css/main.css assets/js/main.js assets/images/hero.jpg; do
-  CODE="$(curl -sI --max-time 20 "http://assocpartners.com/$asset" | head -1 | tr -d '\r')"
+  # Prefer HTTPS once enforced; follow redirects from http→https.
+  CODE="$(curl -sI -L --max-time 20 "https://assocpartners.com/$asset" | rg -i '^HTTP/' | tail -1 | tr -d '\r')"
   if printf '%s' "$CODE" | rg -q '200'; then
     ok "asset $asset reachable"
   else
@@ -92,9 +93,9 @@ done
 echo
 echo "== HTTPS =="
 CERT_CN="$(echo | openssl s_client -servername assocpartners.com -connect assocpartners.com:443 2>/dev/null | openssl x509 -noout -subject 2>/dev/null || true)"
-if printf '%s' "$CERT_CN" | rg -q 'assocpartners\\.com'; then
+if printf '%s' "$CERT_CN" | rg -q 'assocpartners[.]com'; then
   ok "TLS certificate is for assocpartners.com"
-elif printf '%s' "$CERT_CN" | rg -q 'github\\.io'; then
+elif printf '%s' "$CERT_CN" | rg -q 'github[.]io'; then
   msg="TLS still using *.github.io placeholder cert (GitHub custom cert pending)"
   if [[ "$REQUIRE_HTTPS" == "1" ]]; then
     bad "$msg"
