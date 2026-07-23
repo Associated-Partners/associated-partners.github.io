@@ -1,0 +1,272 @@
+% Associated Partners — Status Walkthrough
+% Beamer slides (compile with pdflatex)
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{apink}{HTML}{1C1A17}
+\definecolor{apaccent}{HTML}{8A6A3D}
+\setbeamercolor{structure}{fg=apink}
+\setbeamercolor{title}{fg=apink}
+\setbeamercolor{frametitle}{fg=apink}
+
+\title{Associated Partners}
+\subtitle{Website, Domain, Email, and Operations Assistant}
+\author{Project Status Walkthrough}
+\date{22 July 2026}
+
+\begin{document}
+
+%----------------------------------------------------------------------
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Agenda}
+  \begin{enumerate}
+    \item Goal and architecture
+    \item What is already done
+    \item What still needs to be done
+    \item Outstanding decisions
+    \item Recommended sequence
+    \item How to verify
+  \end{enumerate}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Goal}
+  \begin{block}{Immediate objective}
+    Make \texttt{assocpartners.com} look legitimate, polished, and
+    business-ready --- while keeping the website maintainable from one
+    GitHub repository and leaving room for a private assistant later.
+  \end{block}
+
+  \vspace{0.6em}
+  \textbf{Do not build yet:} CRM, events database, booking system,
+  CMS, autonomous email sending, or domain-wide impersonation.
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Three-layer architecture}
+  \begin{center}
+    \texttt{assocpartners.com}\\[0.8em]
+    \begin{tabular}{lll}
+      \toprule
+      Layer & System & Visibility \\
+      \midrule
+      Website & GitHub Pages & Public \\
+      Email / Calendar & Microsoft 365 today & Private business \\
+      Automation API & \texttt{operations-assistant} & Private \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+
+  \vspace{1em}
+  \alert{Key rule:} do not put email/calendar orchestration inside the
+  public GitHub Pages site.
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Repositories}
+  \begin{itemize}
+    \item \textbf{Public:}
+      \texttt{Associated-Partners/associated-partners.github.io}
+    \item \textbf{Private:}
+      \texttt{Associated-Partners/operations-assistant}
+  \end{itemize}
+
+  \vspace{0.8em}
+  Local Cursor workspace:
+  \begin{itemize}
+    \item Website root
+    \item \texttt{operations-assistant/}
+    \item \texttt{reports/} (this briefing material)
+  \end{itemize}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Accomplished --- Phase A (Website)}
+  \begin{itemize}
+    \item GitHub organization created and used as source of truth
+    \item Static single-page site: Home / About / Services / Contact
+    \item Restrained Spectral-inspired design
+    \item Coming Soon + \texttt{info@assocpartners.com}
+    \item Dual GitHub admin access for operators
+  \end{itemize}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Accomplished --- Phase B (Domain)}
+  \begin{itemize}
+    \item Apex A records point to GitHub Pages
+    \item \texttt{www} CNAME $\rightarrow$ \texttt{associated-partners.github.io}
+    \item Old GoDaddy Website Builder content replaced
+    \item Mail MX left intact (Outlook / Microsoft 365)
+    \item Live verification scripts added
+  \end{itemize}
+
+  \vspace{0.6em}
+  \begin{block}{Still waiting}
+    Custom TLS certificate for \texttt{assocpartners.com}, then Enforce HTTPS.
+  \end{block}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Accomplished --- Assistant scaffold}
+  Private FastAPI service started with human-in-the-loop endpoints:
+
+  \begin{itemize}
+    \item \texttt{/health}
+    \item \texttt{/mail/inbox}, \texttt{/mail/inquiries}
+    \item \texttt{/mail/draft} vs \texttt{/mail/send}
+    \item \texttt{/calendar/propose} vs \texttt{/calendar/create}
+    \item Unit tests passing for approval flows
+  \end{itemize}
+
+  \vspace{0.5em}
+  OAuth and live send/create are \textbf{not} connected yet.
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Still to do --- finish the domain}
+  \begin{enumerate}
+    \item Wait for GitHub custom HTTPS certificate
+    \item Enable Enforce HTTPS
+    \item Verify \texttt{https://assocpartners.com}
+    \item Verify \texttt{https://www.assocpartners.com}
+    \item Optional: org-level domain verification TXT
+    \item Re-run \texttt{./scripts/verify-live.sh -{}-require-https}
+  \end{enumerate}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Still to do --- business email (Phase C)}
+  \begin{enumerate}
+    \item Decide Microsoft 365 vs Google Workspace
+    \item Make \texttt{melanie@assocpartners.com} the primary identity
+    \item Add aliases (can all route to Melanie):
+      \begin{itemize}
+        \item \texttt{info@}
+        \item \texttt{events@}
+        \item \texttt{contact@}
+      \end{itemize}
+    \item Configure / confirm SPF, DKIM, DMARC
+    \item External send/receive test
+  \end{enumerate}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Still to do --- first agent workflow (Phase D)}
+  Target workflow:
+
+  \begin{center}
+    Inquiry $\rightarrow$ summarize $\rightarrow$ check calendar\\
+    $\rightarrow$ draft reply $\rightarrow$ Melanie approves $\rightarrow$ send
+  \end{center}
+
+  \vspace{0.8em}
+  Implementation steps:
+  \begin{enumerate}
+    \item OAuth for Melanie only (minimum scopes)
+    \item Connect provider mail + calendar APIs
+    \item Keep draft/send and propose/create separate
+    \item Host privately later (not on GitHub Pages)
+  \end{enumerate}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Outstanding decision \#1 --- mail platform}
+  \textbf{Current MX reality:} Outlook / Microsoft 365
+
+  \vspace{0.6em}
+  \begin{tabular}{p{0.42\textwidth}p{0.48\textwidth}}
+    \toprule
+    Option & Implication \\
+    \midrule
+    Keep Microsoft 365 & Faster if Outlook is already in use; Graph API \\
+    Migrate to Google Workspace & Matches original plan; careful DNS cutover \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \alert{Decide before writing OAuth code.}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Other outstanding decisions}
+  \begin{itemize}
+    \item Public contact address: \texttt{info@}, \texttt{events@}, or both?
+    \item Confirm Melanie has admin on DNS, mail tenant, and GitHub
+    \item Defer \texttt{api.assocpartners.com} until local OAuth works
+    \item Grant GitHub \texttt{workflow} OAuth scope to push CI workflow
+  \end{itemize}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Recommended sequence}
+  \begin{enumerate}
+    \item Finish HTTPS on \texttt{assocpartners.com}
+    \item Decide mail provider
+    \item Stand up \texttt{melanie@} + aliases
+    \item Wire \texttt{operations-assistant} OAuth
+    \item Ship inquiry $\rightarrow$ draft $\rightarrow$ approve $\rightarrow$ send
+  \end{enumerate}
+
+  \vspace{0.8em}
+  \begin{block}{Near-term milestone}
+    Live HTTPS site + operational Melanie mailbox + approved draft replies
+    for event inquiries.
+  \end{block}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}[fragile]{Verification commands}
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true]
+# Website
+./scripts/verify-local.sh
+./scripts/verify-live.sh
+./scripts/verify-live.sh --require-https
+
+# Assistant
+cd operations-assistant
+source .venv/bin/activate
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
+\end{lstlisting}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Where to find the notes}
+  \begin{itemize}
+    \item Brief (Markdown): \texttt{reports/status-brief.md}
+    \item Slides (LaTeX): \texttt{reports/slides/associated-partners-status.tex}
+    \item Architecture: \texttt{ARCHITECTURE.md}
+    \item DNS cutover: \texttt{DNS.md}
+    \item Tests: \texttt{TESTS.md}
+  \end{itemize}
+\end{frame}
+
+%----------------------------------------------------------------------
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Website is live on GitHub Pages at the custom domain
+    \item Mail was preserved during cutover
+    \item HTTPS certificate is the last Phase B blocker
+    \item Assistant scaffold exists; provider choice unlocks real automation
+  \end{itemize}
+
+  \vspace{1em}
+  \centering\textbf{Next action:} finish HTTPS, then decide mail platform.
+\end{frame}
+
+\end{document}

@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "name": "website (associated-partners.github.io)",
+      "path": "."
+    },
+    {
+      "name": "operations-assistant",
+      "path": "operations-assistant"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "operations-assistant/.venv": true,
+      "operations-assistant/.pytest_cache": true
+    }
+  }
+}

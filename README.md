@@ -77,6 +77,14 @@ Site code is MIT. Spectral design inspiration remains attributed to HTML5 UP.
 
 See **[ARCHITECTURE.md](ARCHITECTURE.md)** for the three-layer model (website / email / private assistant).
 
+Locally, open **`assoc-partners.code-workspace`** to load:
+
+- website (this repo)
+- `operations-assistant/` (private repo checkout)
+- `reports/` (status brief + LaTeX slides)
+
+Project status write-up: [`reports/status-brief.md`](reports/status-brief.md)
+
 ## GitHub accounts
 
 Both accounts can edit this repository:

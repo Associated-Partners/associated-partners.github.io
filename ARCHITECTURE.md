@@ -27,7 +27,7 @@ Associated-Partners/
 | A — Website on GitHub Pages | Done | https://associated-partners.github.io/ |
 | B — Custom domain + HTTPS | In progress | See `DNS.md` |
 | C — Melanie business identity | Blocked on decision | DNS currently uses **Microsoft 365 / Outlook**, not Google Workspace |
-| D — Operations assistant | Not started | Human-in-the-loop Gmail + Calendar only |
+| D — Operations assistant | Scaffold done | FastAPI + tests; OAuth blocked on Phase C |
 
 ## Phase C decision required
 

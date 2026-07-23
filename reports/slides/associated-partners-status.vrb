@@ -1,0 +1,12 @@
+\frametitle{Verification commands}
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize,breaklines=true]
+# Website
+./scripts/verify-local.sh
+./scripts/verify-live.sh
+./scripts/verify-live.sh --require-https
+
+# Assistant
+cd operations-assistant
+source .venv/bin/activate
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
+\end{lstlisting}
