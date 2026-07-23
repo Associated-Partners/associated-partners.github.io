@@ -52,8 +52,8 @@ Live preview / production host:
 | `www` CNAME → `associated-partners.github.io` | Done |
 | Site content cutover off GoDaddy Website Builder | Done |
 | MX preserved (Outlook / Microsoft 365) | Done |
-| Custom HTTPS certificate for `assocpartners.com` | Pending (GitHub still provisioning) |
-| Enforce HTTPS in Pages settings | Blocked until cert exists |
+| Custom HTTPS certificate for `assocpartners.com` | Done |
+| Enforce HTTPS in Pages settings | Done |
 
 Verified GitHub Pages A records:
 
